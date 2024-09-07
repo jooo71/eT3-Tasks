@@ -42,6 +42,9 @@ class User:
             self.balance -= amount
             print(f"{self.name} bought {amount} worth of airtime. New balance is {self.balance}.")
 
+    def get_balance(self):
+        print(f"{self.name} balance is {self.balance}.")
+
 
 class Transaction:
     def __init__(self, sender, recipient, amount, transaction_type):
@@ -124,6 +127,13 @@ class eT3CashSystem:
         else:
             print("User not found.")
 
+    def getting_balance(self,phone_number):
+        user = self.get_user_by_phone(phone_number)
+        if user:
+            return user.get_balance()
+        else:
+            print("User not found.")
+
 def main():
     eT3Cash = eT3CashSystem()
 
@@ -139,7 +149,8 @@ def main():
         print("4. Pay Bill")
         print("5. Buy Airtime")
         print("6. View Transaction History")
-        print("7. Exit")
+        print("7. Get Balance")
+        print("8. Exit")
 
         action = input("Enter the number of your action: ")
 
@@ -172,8 +183,12 @@ def main():
 
         elif action == "6":
             eT3Cash.get_transaction_history()
-
+        
         elif action == "7":
+            phone_number = input("Enter your phone number: ")
+            eT3Cash.getting_balance(phone_number)
+
+        elif action == "8":
             print("Exiting the system.")
             break
 
