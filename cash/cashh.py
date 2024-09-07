@@ -6,53 +6,42 @@ class User:
         self.phone_number = phone_number
         self.balance = balance
 
-    def deposit(self, amount, cash_system):
+    def deposit(self, amount):
         self.balance += amount
         print(f"{self.name} has deposited {amount}. New balance is {self.balance}.")
-        # Record the transaction
-        transaction = Transaction(self, None, amount, "Deposit")
-        cash_system.record_transaction(transaction)
-
-    def withdraw(self, amount, cash_system):
+        
+    def withdraw(self, amount):
         if amount > self.balance:
             print("Insufficient balance!")
         else:
             self.balance -= amount
             print(f"{self.name} has withdrawn {amount}. New balance is {self.balance}.")
-            # Record the transaction
-            transaction = Transaction(self, None, amount, "Withdrawal")
-            cash_system.record_transaction(transaction)
 
-    def send_money(self, recipient, amount, cash_system):
+
+    def send_money(self, recipient , amount):
         if amount > self.balance:
             print("Insufficient balance!")
         else:
             self.balance -= amount
             recipient.balance += amount
             print(f"{self.name} sent {amount} to {recipient.name}. New balance is {self.balance}. {recipient.name}'s new balance is {recipient.balance}")
-            # Record the transaction
-            transaction = Transaction(self, recipient, amount, "Transfer")
-            cash_system.record_transaction(transaction)
 
-    def pay_bill(self, bill_name, amount, cash_system):
+
+    def pay_bill(self, bill_name, amount):
         if amount > self.balance:
             print("Insufficient balance to pay the bill!")
         else:
             self.balance -= amount
             print(f"{self.name} paid {amount} for {bill_name}. New balance is {self.balance}.")
-            # Record the transaction
-            transaction = Transaction(self, None, amount, f"Bill Payment ({bill_name})")
-            cash_system.record_transaction(transaction)
 
-    def buy_airtime(self, amount, cash_system):
+
+    def buy_airtime(self, amount):
         if amount > self.balance:
             print("Insufficient balance to buy airtime!")
         else:
             self.balance -= amount
             print(f"{self.name} bought {amount} worth of airtime. New balance is {self.balance}.")
-            # Record the transaction
-            transaction = Transaction(self, None, amount, "Airtime Purchase")
-            cash_system.record_transaction(transaction)
+
 
 class Transaction:
     def __init__(self, sender, recipient, amount, transaction_type):
@@ -92,14 +81,18 @@ class eT3CashSystem:
     def perform_deposit(self, phone_number, amount):
         user = self.get_user_by_phone(phone_number)
         if user:
-            user.deposit(amount, self)
+            user.deposit(amount)
+            transaction = Transaction(user, None, amount, "Deposit")
+            self.record_transaction(transaction)
         else:
             print("User not found.")
 
     def perform_withdrawal(self, phone_number, amount):
         user = self.get_user_by_phone(phone_number)
         if user:
-            user.withdraw(amount, self)
+            user.withdraw(amount)
+            transaction = Transaction(user, None, amount, "Withdrawal")
+            self.record_transaction(transaction)
         else:
             print("User not found.")
 
@@ -107,40 +100,85 @@ class eT3CashSystem:
         sender = self.get_user_by_phone(sender_phone)
         recipient = self.get_user_by_phone(recipient_phone)
         if sender and recipient:
-            sender.send_money(recipient, amount, self)
+            sender.send_money(recipient, amount)
+            transaction = Transaction(sender, recipient, amount, "Transfer")
+            self.record_transaction(transaction)
         else:
             print("One or both users not found.")
 
     def perform_bill_payment(self, phone_number, bill_name, amount):
         user = self.get_user_by_phone(phone_number)
         if user:
-            user.pay_bill(bill_name, amount, self)
+            user.pay_bill(bill_name, amount)
+            transaction = Transaction(user, None, amount, f"Bill Payment ({bill_name})")
+            self.record_transaction(transaction)
         else:
             print("User not found.")
 
     def perform_airtime_purchase(self, phone_number, amount):
         user = self.get_user_by_phone(phone_number)
         if user:
-            user.buy_airtime(amount, self)
+            user.buy_airtime(amount)
+            transaction = Transaction(user, None, amount, "Airtime Purchase")
+            self.record_transaction(transaction)
         else:
             print("User not found.")
 
-# Example usage
-eT3Cash = eT3CashSystem()
+def main():
+    eT3Cash = eT3CashSystem()
 
-# Add users
-user1 = User("Youseif Essam", "01003793415", balance=100)
-user2 = User("Mohammed Fahmy", "01110989460", balance=20)
+    # Adding some sample users
+    eT3Cash.add_user(User("Youseif Essam", "01003793415", balance=100))
+    eT3Cash.add_user(User("Mohammed Fahmy", "01110989460", balance=20))
 
-eT3Cash.add_user(user1)
-eT3Cash.add_user(user2)
+    while True:
+        print("\nChoose an action:")
+        print("1. Deposit")
+        print("2. Withdraw")
+        print("3. Transfer")
+        print("4. Pay Bill")
+        print("5. Buy Airtime")
+        print("6. View Transaction History")
+        print("7. Exit")
 
-# Perform transactions
-eT3Cash.perform_transfer("01003793415", "01110989460", 20)
-eT3Cash.perform_deposit("01003793415", 50)
-eT3Cash.perform_withdrawal("01110989460", 10)
-eT3Cash.perform_bill_payment("01003793415", "Electricity", 30)
-eT3Cash.perform_airtime_purchase("01110989460", 20)
+        action = input("Enter the number of your action: ")
 
-# Get transaction history
-eT3Cash.get_transaction_history()
+        if action == "1":
+            phone_number = input("Enter your phone number: ")
+            amount = float(input("Enter the amount to deposit: "))
+            eT3Cash.perform_deposit(phone_number, amount)
+
+        elif action == "2":
+            phone_number = input("Enter your phone number: ")
+            amount = float(input("Enter the amount to withdraw: "))
+            eT3Cash.perform_withdrawal(phone_number, amount)
+
+        elif action == "3":
+            sender_phone = input("Enter your phone number: ")
+            recipient_phone = input("Enter the recipient's phone number: ")
+            amount = float(input("Enter the amount to transfer: "))
+            eT3Cash.perform_transfer(sender_phone, recipient_phone, amount)
+
+        elif action == "4":
+            phone_number = input("Enter your phone number: ")
+            bill_name = input("Enter the bill name: ")
+            amount = float(input("Enter the amount to pay: "))
+            eT3Cash.perform_bill_payment(phone_number, bill_name, amount)
+
+        elif action == "5":
+            phone_number = input("Enter your phone number: ")
+            amount = float(input("Enter the amount for airtime purchase: "))
+            eT3Cash.perform_airtime_purchase(phone_number, amount)
+
+        elif action == "6":
+            eT3Cash.get_transaction_history()
+
+        elif action == "7":
+            print("Exiting the system.")
+            break
+
+        else:
+            print("Invalid option. Please try again.")
+
+if __name__ == "__main__":
+    main()
