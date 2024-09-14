@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import User, Transaction
 from decimal import Decimal
+from django.utils import timezone
+
 # Home page view
 def home(request):
     return render(request, 'home.html')

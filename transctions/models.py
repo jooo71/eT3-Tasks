@@ -5,7 +5,7 @@ from decimal import Decimal
 # Create your models here.
 class User(models.Model):
     name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = models.CharField(max_length=11, unique=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
 
     def deposit(self, amount):
@@ -28,7 +28,7 @@ class User(models.Model):
         return self.name
 
 class Transaction(models.Model):
-    sender = models.ForeignKey(User, related_name="sent_transactions", on_delete=models.CASCADE, null=True)
+    sender = models.ForeignKey(User, related_name="sent_transactions", on_delete=models.CASCADE, null=True)    ## ForeignKey:a relationship between the Transaction model and the User model. Specifically, this defines the sender of the transaction as a User.
     recipient = models.ForeignKey(User, related_name="received_transactions", on_delete=models.CASCADE, null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=50)
