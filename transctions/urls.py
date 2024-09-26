@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/balance/', views.balance, name='api-balance'),
     path('api/transaction-history/', views.transaction_history, name='api-transaction-history'),
     path('api/register/', views.register_user, name='register_user'),
-    path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/login/', views.login_user, name='token_obtain_pair'),
+
 ]

@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'transctions',
     'rest_framework',
     'rest_framework_simplejwt',
-    'rest_framework.authtoken',
-    
+    # 'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -60,6 +60,7 @@ SIMPLE_JWT = {
 # AllowAny / IsAuthenticated / IsAdminuser / IsAuthenticatedReadonly 
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -68,6 +69,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ["http://localhost:8080"]  # We add your frontend URL here.
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8080']
 
 ROOT_URLCONF = 'eT3_cash_project.urls'
 

@@ -1,121 +1,3 @@
-# from django.shortcuts import render, get_object_or_404, redirect
-# from .models import User, Transaction
-# from decimal import Decimal
-# from django.utils import timezone
-# from django.contrib.auth import authenticate, login
-# from django.contrib import messages
-# from rest_framework.permissions import IsAuthenticated ,IsAdminUser
-# from rest_framework import generics
-# from .models import User, Transaction
-# from .serializers import TransactionSerializer
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
-# # from rest_framework.permissions import IsAuthenticated
-# # from .models import User, Transaction
-# from django.contrib.auth.decorators import login_required
-
-# # Home page view
-# def home(request):
-#     return render(request, 'home.html')
-
-# # Deposit view
-# def deposit(request):
-#     if request.method == 'POST':
-#         phone_number = request.POST.get('phone')
-#         amount = Decimal(request.POST.get('amount'))  # Convert amount to Decimal
-#         user = get_object_or_404(User, phone_number=phone_number)
-#         user.deposit(amount)  # Deposit amount as Decimal
-#         Transaction.objects.create(sender = user, recipient=None, amount=amount, transaction_type='deposit')
-#         message = f"Deposited {amount} to {user.name}. New balance: {user.balance}"
-#         return render(request, 'home.html', {'message': message})
-#     return redirect('home')
-
-# # Withdraw view
-# def withdraw(request):
-#     if request.method == 'POST':
-#         phone_number = request.POST.get('phone')
-#         amount = Decimal(request.POST.get('amount'))  # Convert amount to Decimal
-#         user = get_object_or_404(User, phone_number=phone_number)
-#         try:
-#             user.withdraw(amount)  # Withdraw amount as Decimal
-#             message = f"Withdrew {amount} from {user.name}. New balance: {user.balance}"
-#             Transaction.objects.create(sender = user, recipient=None, amount=amount, transaction_type='withdraw')
-#         except ValueError as e:
-#             message = str(e)
-#         return render(request, 'home.html', {'message': message})
-#     return redirect('home')
-
-# def pay_bill(request):
-#     if request.method == 'POST':
-#         phone_number = request.POST.get('phone').strip()
-#         bill_name = request.POST.get('bill_name').strip()
-#         amount = Decimal(request.POST.get('amount'))
-#         user = get_object_or_404(User, phone_number=phone_number)
-#         try:
-#             user.pay_bill(amount)  # Withdraw amount as Decimal
-#             message = f"{user.name} paid {amount} for {bill_name}. New balance is {user.balance}"
-#             Transaction.objects.create(sender = user, recipient=None, amount=amount, transaction_type=f'Bill Payment ({bill_name})')
-#         except ValueError as e:
-#             message = str(e)
-#         return render(request, 'home.html', {'message': message})
-#     return redirect('home')
-
-# def buy_airtime(request):
-#     if request.method == 'POST':
-#         phone_number = request.POST.get('phone').strip()
-#         amount = Decimal(request.POST.get('amount'))
-#         user = get_object_or_404(User, phone_number=phone_number)
-#         try:
-#             user.buy_airtime(amount)  # Withdraw amount as Decimal
-#             message = f"Bought {amount} worth of airtime. New balance: {user.balance}"
-#             Transaction.objects.create(sender = user, recipient=None, amount=amount, transaction_type=f'airtime Payment ')
-#         except ValueError as e:
-#             message = str(e)
-#         return render(request, 'home.html', {'message': message})
-#     return redirect('home')        
-        
-
-# # Transfer view
-# def transfer(request):
-#     if request.method == 'POST':
-#         sender_phone = request.POST.get('sender_phone')
-#         recipient_phone = request.POST.get('recipient_phone')
-#         amount = Decimal(request.POST.get('amount'))  # Convert amount to Decimal
-
-#         sender = get_object_or_404(User, phone_number=sender_phone)
-#         recipient = get_object_or_404(User, phone_number=recipient_phone)
-
-#         if sender.balance >= amount:
-#             sender.withdraw(amount)
-#             recipient.deposit(amount)
-#             Transaction.objects.create(sender=sender, recipient=recipient, amount=amount, transaction_type='Transfer')
-#             message = f"Transferred {amount} from {sender.name} to {recipient.name}."
-#         else:
-#             message = "Insufficient balance."
-#         return render(request, 'home.html', {'message': message})
-#     return redirect('home')
-
-# # Check balance view
-# def balance(request):
-#     if request.method == 'GET':
-#         phone_number = request.GET.get('phone')
-#         user = get_object_or_404(User, phone_number=phone_number)
-#         message = f"{user.name}'s balance is {user.balance}."
-#         return render(request, 'home.html', {'message': message})
-#     return redirect('home')
-
-# # Transaction history view
-
-# def transaction_history(request):
-#     if request.method == 'GET':
-#         phone_number = request.GET.get('phone')
-#         user = get_object_or_404(User, phone_number=phone_number)
-#         transactions = Transaction.objects.filter(sender=user) | Transaction.objects.filter(recipient=user)
-#         return render(request, 'history.html', {'transactions': transactions})
-#     return redirect('home')
-
-
-        
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -123,12 +5,20 @@ from .models import User, Transaction
 from .serializers import UserSerializer, TransactionSerializer
 from decimal import Decimal
 from rest_framework.authentication import BasicAuthentication , TokenAuthentication 
-from rest_framework.permissions import IsAuthenticated 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth import authenticate, login
 from rest_framework_simplejwt.tokens import AccessToken
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+import json
+
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login, logout
 
 # Home page view
 @api_view(['GET'])
@@ -281,3 +171,16 @@ def login_user(request):
         })
     else:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@ensure_csrf_cookie
+@require_http_methods(['GET'])
+def set_csrf_token(request):
+    """
+    We set the CSRF cookie on the frontend.
+    """
+    return JsonResponse({'message': 'CSRF cookie set'})
+
+
+
+
