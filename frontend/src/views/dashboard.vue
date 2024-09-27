@@ -10,6 +10,8 @@
     <a href="#" @click="logout">logout</a> 
 
   </nav>
+
+  <BackButton/>
   <router-view/>
 </template>
 
@@ -27,7 +29,7 @@ nav {
 
   a {
     font-weight: bold;
-    color: #2c3e50;
+    color: #2c502e;
 
     &.router-link-exact-active {
       color: #42b983;
@@ -38,8 +40,12 @@ nav {
 
 <script>
 import axios from 'axios';
+import BackButton from '@/components/BackButton.vue'; // Import the BackButton component
 
 export default {
+  components: {
+    BackButton, // Register the BackButton component
+  },
   methods: {
     async logout() {
       try {

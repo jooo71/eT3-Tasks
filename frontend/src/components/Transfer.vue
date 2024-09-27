@@ -35,12 +35,17 @@
         {{ errorMessage }}
       </div>
     </div>
+    <BackButton/>
   </template>
   
   <script>
   import api from "@/api"; // Ensure you've set up the axios instance in api.js
-  
+  import BackButton from '@/components/BackButton.vue'; // Import the BackButton component
+
   export default {
+    components: {
+    BackButton, // Register the BackButton component
+  },
     data() {
       return {
         recipient_phone: "",
