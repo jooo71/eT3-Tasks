@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <nav v-if="['/', '/login', '/register'].includes($route.path)">
     <router-link to="/">Home</router-link> |
     <router-link to="/register">register</router-link> |
     <router-link to="/login">login</router-link> |

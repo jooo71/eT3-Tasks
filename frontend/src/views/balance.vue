@@ -12,7 +12,7 @@
   export default {
     name: 'balance',
     components: {
-      balance
+      Balance
     }
   }
   </script>

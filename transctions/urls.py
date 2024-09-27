@@ -31,5 +31,6 @@ urlpatterns = [
     path('api/register/', views.register_user, name='register_user'),
     # path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/login/', views.login_user, name='token_obtain_pair'),
+    path('api/logout/', views.logout, name='token_obtain_pair'),
 
 ]

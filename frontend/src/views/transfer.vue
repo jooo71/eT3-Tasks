@@ -12,7 +12,7 @@
   export default {
     name: 'transfer',
     components: {
-      transfer
+      Transfer
     }
   }
   </script>

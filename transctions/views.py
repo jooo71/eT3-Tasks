@@ -173,13 +173,12 @@ def login_user(request):
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@ensure_csrf_cookie
-@require_http_methods(['GET'])
-def set_csrf_token(request):
-    """
-    We set the CSRF cookie on the frontend.
-    """
-    return JsonResponse({'message': 'CSRF cookie set'})
+
+@api_view(['POST'])
+def logout(request):
+    # No need to handle refresh tokens or blacklisting, just return a response
+    return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+
 
 
 

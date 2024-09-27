@@ -7,7 +7,7 @@
     <router-link to="/transfer">transfer</router-link> |
     <router-link to="/balance">balance</router-link> |
     <router-link to="/transaction-history">transactionHistory</router-link> |
-
+    <a href="#" @click="logout">logout</a> 
 
   </nav>
   <router-view/>
@@ -35,3 +35,35 @@ nav {
   }
 }
 </style>
+
+<script>
+import axios from 'axios';
+
+export default {
+  methods: {
+    async logout() {
+      try {
+        // Get the access token from localStorage
+        const token = localStorage.getItem('access_token');
+
+        // Call the server-side logout API with the token
+        await axios.post('http://127.0.0.1:8000/api/logout/', {}, {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Send the token in the Authorization header
+          }
+        });
+        
+        // Remove the access token from localStorage
+        localStorage.removeItem('access_token');
+        
+        // Redirect to the login page
+        this.$router.push('/login');
+      } catch (error) {
+        console.error("Error logging out:", error);
+        // Always redirect to login even if there's an error
+        this.$router.push('/login');
+      }
+    }
+  }
+};
+</script>

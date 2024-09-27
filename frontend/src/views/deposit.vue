@@ -12,7 +12,7 @@
   export default {
     name: 'deposit',
     components: {
-      deposit
+      Deposit
     }
   }
   </script>
