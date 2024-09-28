@@ -168,6 +168,9 @@ def login_user(request):
         access_token = AccessToken.for_user(user)
         return Response({
             'access': str(access_token),
+            'user':{
+                'name': user.name,  # Assuming 'name' field exists in the User model
+            }
         })
     else:
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)

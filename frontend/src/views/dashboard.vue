@@ -78,6 +78,7 @@ export default {
   <div id="dashboard">
     <header>
       <h1>Dashboard</h1>
+      <h1>Welcome {{ user_name }}</h1> 
     </header>
 
     <main>
@@ -106,6 +107,15 @@ export default {
 import axios from 'axios';
 import '@/assets/dashboard.css';
 export default {
+  data() {
+    return {
+      user_name: '', // Initialize userName
+    };
+  },
+  mounted() {
+    // Fetch the userName from localStorage
+    this.user_name = localStorage.getItem('user_name');
+  },
   methods: {
     async logout() {
       try {
@@ -116,6 +126,7 @@ export default {
           }
         });
         localStorage.removeItem('access_token');
+        localStorage.removeItem('user_name');
         this.$router.push('/login');
       } catch (error) {
         console.error("Error logging out:", error);

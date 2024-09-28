@@ -60,6 +60,7 @@ export default {
 
         // Save the access token
         localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('user_name', response.data.user.name);
         this.$router.push('/dashboard'); // Redirect to a protected route
       } catch (err) {
         this.error = 'Invalid credentials';
