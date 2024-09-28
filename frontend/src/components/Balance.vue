@@ -1,23 +1,24 @@
 <template>
-    <div>
-      <h2>Check Balance</h2>
-      <button @click="getBalance">Check Balance</button>
-  
-      <!-- Success or error messages -->
-      <div v-if="balanceMessage" class="balance-message">
-        {{ balanceMessage }}
-      </div>
-      <div v-if="errorMessage" class="error">
-        {{ errorMessage }}
-      </div>
+  <div class="balance-container">
+    <h2>Check Balance</h2>
+    <button @click="getBalance">Check Balance</button>
+
+    <!-- Success or error messages -->
+    <div v-if="balanceMessage" class="balance-message">
+      {{ balanceMessage }}
     </div>
-    <BackButton/>
-  </template>
+    <div v-if="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+  </div>
+  <BackButton/>
+</template>
+
   
   <script>
   import api from "@/api"; // Ensure you've set up the axios instance in api.js
   import BackButton from '@/components/BackButton.vue'; // Import the BackButton component
-
+  import '@/assets/balance.css';
   export default {
     components: {
     BackButton, // Register the BackButton component
@@ -52,28 +53,4 @@
   };
   </script>
   
-  <style scoped>
-  /* Simple styles for form and messages */
-  button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-  
-  button:hover {
-    background-color: #45a049;
-  }
-  
-  .balance-message {
-    font-weight: bold;
-    color: blue;
-  }
-  
-  .error {
-    color: red;
-  }
-  </style>
   

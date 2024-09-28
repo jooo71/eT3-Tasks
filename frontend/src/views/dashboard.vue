@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <nav>
     <router-link to="/deposit">deposit</router-link> |
     <router-link to="/withdraw">withdraw</router-link> |
@@ -67,6 +67,58 @@ export default {
       } catch (error) {
         console.error("Error logging out:", error);
         // Always redirect to login even if there's an error
+        this.$router.push('/login');
+      }
+    }
+  }
+};
+</script> -->
+
+<template>
+  <div id="dashboard">
+    <header>
+      <h1>Dashboard</h1>
+    </header>
+
+    <main>
+      <!-- Navigation buttons in two rows -->
+      <div class="button-container">
+        <div class="row">
+          <router-link to="/deposit" class="dashboard-button">Deposit</router-link>
+          <router-link to="/withdraw" class="dashboard-button">Withdraw</router-link>
+          <router-link to="/payBill" class="dashboard-button">Pay Bill</router-link>
+          <router-link to="/buyAirtime" class="dashboard-button">Buy Airtime</router-link>
+        </div>
+        <div class="row">
+          <router-link to="/transfer" class="dashboard-button">Transfer</router-link>
+          <router-link to="/balance" class="dashboard-button">Balance</router-link>
+          <router-link to="/transaction-history" class="dashboard-button">Transaction History</router-link>
+          <a href="#" @click="logout" class="dashboard-button logout">Logout</a>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</template>
+
+
+<script>
+import axios from 'axios';
+import '@/assets/dashboard.css';
+export default {
+  methods: {
+    async logout() {
+      try {
+        const token = localStorage.getItem('access_token');
+        await axios.post('http://127.0.0.1:8000/api/logout/', {}, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+        localStorage.removeItem('access_token');
+        this.$router.push('/login');
+      } catch (error) {
+        console.error("Error logging out:", error);
         this.$router.push('/login');
       }
     }

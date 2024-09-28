@@ -1,32 +1,20 @@
 <template>
-  <nav v-if="['/', '/login', '/register'].includes($route.path)">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/register">register</router-link> |
-    <router-link to="/login">login</router-link> |
-
-  </nav>
-  <router-view/>
+  <div id="app">
+    <nav v-if="['/', '/login', '/register'].includes($route.path)">
+      <div class="button-container">
+        <router-link to="/" class="nav-button">Home</router-link>
+        <router-link to="/register" class="nav-button">Register</router-link>
+        <router-link to="/login" class="nav-button">Login</router-link>
+      </div>
+    </nav>
+    <router-view />
+  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+export default {
+  // Your script logic here
+};
+</script>
 
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style>
+<style src="./App.css"></style>  <!-- Import the CSS file -->

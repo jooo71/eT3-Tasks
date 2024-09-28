@@ -1,36 +1,38 @@
 <template>
-    <div>
-      <h2>Buy Airtime</h2>
-      <form @submit.prevent="BuyAirtime">
-        <div class="form-group">
-          <label for="amount">Amount:</label>
-          <input
-            v-model="amount"
-            type="number"
-            id="amount"
-            placeholder="Enter amount"
-            required
-          />
-        </div>
-  
-        <button type="submit">Buy Airtime</button>
-      </form>
-  
-      <!-- Success or error messages -->
-      <div v-if="successMessage" class="success">
-        {{ successMessage }}
+  <div class="buyairtime-container">
+    <h2>Buy Airtime</h2>
+    <form @submit.prevent="BuyAirtime">
+      <div class="form-group">
+        <label for="amount">Amount:</label>
+        <input
+          v-model="amount"
+          type="number"
+          id="amount"
+          placeholder="Enter amount"
+          required
+          min="0"
+        />
       </div>
-      <div v-if="errorMessage" class="error">
-        {{ errorMessage }}
-      </div>
+
+      <button type="submit">Buy Airtime</button>
+    </form>
+
+    <!-- Success or error messages -->
+    <div v-if="successMessage" class="success">
+      {{ successMessage }}
     </div>
-    <BackButton/>
-  </template>
+    <div v-if="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+  </div>
+  <BackButton/>
+</template>
+
   
   <script>
   import api from "@/api"; // Ensure you've set up the axios instance in api.js
   import BackButton from '@/components/BackButton.vue'; // Import the BackButton component
-
+  import '@/assets/buyairtime.css';
   export default {
     components: {
     BackButton, // Register the BackButton component
@@ -69,34 +71,5 @@
   };
   </script>
   
-  <style scoped>
-  /* Simple styles for form and messages */
-  form {
-    margin: 20px 0;
-  }
   
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  button {
-    background-color: #ffa500;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #e69500;
-  }
-  
-  .success {
-    color: green;
-  }
-  
-  .error {
-    color: red;
-  }
-  </style>
   

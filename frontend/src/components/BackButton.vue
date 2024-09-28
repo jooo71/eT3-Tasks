@@ -19,14 +19,14 @@
     padding: 10px 20px;
     font-size: 16px;
     color: white;
-    background-color: #42b983;
+    background-color: #ff5252;
     border: none;
     border-radius: 4px;
     cursor: pointer;
   }
   
   .back-button:hover {
-    background-color: #7a3535;
+    background-color: #e14a4a;
   }
   </style>
   

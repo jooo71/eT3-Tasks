@@ -1,18 +1,48 @@
 <template>
-  <div>
-    <form @submit.prevent="login">
-      <input v-model="phone_number" type="text" placeholder="Phone Number" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button type="submit">Login</button>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form @submit.prevent="login" class="login-form">
+      <div class="form-group">
+        <label for="phone_number">Phone Number:</label>
+        <input
+          v-model="phone_number"
+          type="text"
+          id="phone_number"
+          placeholder="Enter your phone number"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input
+          v-model="password"
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn">Login</button>
     </form>
-    <div v-if="error">{{ error }}</div>
+
+    <!-- Error Message -->
+    <div v-if="error" class="error">{{ error }}</div>
+    
+    <BackButton />
   </div>
 </template>
 
 <script>
 import api from '@/api.js';
+import BackButton from '@/components/BackButton.vue'; // Import BackButton component
+import '@/assets/Login.css'; // Import the CSS file
 
 export default {
+  components: {
+    BackButton, // Register the BackButton component
+  },
   data() {
     return {
       phone_number: '',
