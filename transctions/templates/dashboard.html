@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %} 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<div class="dashboard-container">
+    <h2>Dashboard</h2>
+    <div class="button-container">
+        <button class="button" onclick="makeDeposit()">Make Deposit</button>
+        <button class="button" onclick="withdraw()">Withdraw</button>
+        <button class="button" onclick="payBill()">Pay Bill</button>
+        <button class="button" onclick="buyAirtime()">Buy Airtime</button>
+        <button class="button" onclick="transfer()">Transfer</button>
+        <button class="button" onclick="transactionHistory()">Transaction History</button>
+        
+        
+        <button class="button" onclick="balance()">Balance</button>
+    </div>
+</div>
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+</body>
+</html>

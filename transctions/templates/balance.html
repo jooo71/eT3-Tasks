@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance</title>
+    <link rel="stylesheet" href="{% static 'css/balance.css' %}">
+</head>
+<body>
+
+<div class="balance-container">
+    <h2>Your Current Balance</h2>
+    <div id="balance-amount"></div>
+    <div id="message"></div>
+    <button class="button" onclick="balance()">Check Balance</button>
+</div>
+
+<script src="{% static 'js/balance.js' %}"></script>
+</body>
+</html>
