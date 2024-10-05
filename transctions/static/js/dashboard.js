@@ -7,9 +7,9 @@ async function withdraw() {
 async function transfer() {
     window.location.href = '/transfer.html'; // Change URL to your transfer page
 }
-function transactionHistory() {
-    window.location.href = '/transaction-history'; // Change URL to your transaction history page
-}
+// async function transactionHistory() {
+//     window.location.href = '/transaction-history'; // Change URL to your transaction history page
+// }
 async function payBill() {
     window.location.href = '/payBill.html'; // Change URL to your pay bill page
 }
@@ -19,6 +19,10 @@ async function buyAirtime() {
 async function transactionHistory() {
     window.location.href = '/transactionHistory.html'; // Change URL to your buy airtime page
 }
-function balance() {
+async function balance() {
     window.location.href = '/balance.html'; // Change URL to your balance page
+}
+async function dashboard() {
+    window.location.href = '/dasboard.html'
+    
 }

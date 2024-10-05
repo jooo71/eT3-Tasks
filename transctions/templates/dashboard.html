@@ -5,25 +5,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %} ?v={ 1.0 }">
+    <link rel="stylesheet" href="{% static 'css/button.css' %}">
+
 </head>
 <body>
 
-<div class="dashboard-container">
+<!-- <div class="dashboard-container">
     <h2>Dashboard</h2>
     <div class="button-container">
-        <button class="button" onclick="makeDeposit()">Make Deposit</button>
+        <button class="button" onclick="makeDeposit()">Deposit</button>
         <button class="button" onclick="withdraw()">Withdraw</button>
         <button class="button" onclick="payBill()">Pay Bill</button>
         <button class="button" onclick="buyAirtime()">Buy Airtime</button>
         <button class="button" onclick="transfer()">Transfer</button>
-        <button class="button" onclick="transactionHistory()">Transaction History</button>
-        
-        
+        <button class="button" onclick="transactionHistory()">Transaction History</button> 
         <button class="button" onclick="balance()">Balance</button>
     </div>
-</div>
-<script src="{% static 'js/dashboard.js' %}"></script>
+</div> -->
 
+<div class="dashboard-container">
+    <h2>Dashboard</h2>
+    
+    <!-- Section 1: Deposit and Withdraw -->
+    <div class="section-title">Operations</div>
+    <div class="button-container">
+        <div class="button-wrapper">
+            <!-- <div class="button-label">Deposit</div> -->
+            <button class="button" onclick="makeDeposit()">Deposit</button>
+        </div>
+        <div class="button-wrapper">
+            <!-- <div class="button-label">Withdraw</div> -->
+            <button class="button" onclick="withdraw()">Withdraw</button>
+        </div>
+        <div class="button-wrapper">
+            <!-- <div class="button-label">Transfer</div> -->
+            <button class="button" onclick="transfer()">Transfer</button>
+        </div>
+    </div>
+
+    <!-- Section 2: Buy Airtime, Pay Bill, Transfer -->
+    <div class="section-title">Services</div>
+    <div class="button-container">
+        <div class="button-wrapper">
+            <!-- <div class="button-label">Buy Airtime</div> -->
+            <button class="button" onclick="buyAirtime()">Buy Airtime</button>
+        </div>
+        <div class="button-wrapper">
+            <!-- <div class="button-label">Pay Bill</div> -->
+            <button class="button" onclick="payBill()">Pay Bill</button>
+        </div>
+
+    </div>
+
+    <!-- Section 3: Transaction History and Balance -->
+    <div class="section-title">Informations</div>
+    <div class="button-container">
+        <div class="button-wrapper">
+            <!-- <div class="button-label">Transaction History</div> -->
+            <button class="button" onclick="transactionHistory()">Transaction History</button>
+        </div>
+        <div class="button-wrapper">
+            <!-- <div class="button-label">Balance</div> -->
+            <button class="button" onclick="balance()">Balance</button>
+        </div>
+    </div>
+</div>
+
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+<button class="back-button" onclick="goBack()">Back</button>
+<script src="{% static 'js/button.js' %}"></script>
 </body>
 </html>

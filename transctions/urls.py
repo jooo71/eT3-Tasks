@@ -36,7 +36,11 @@ urlpatterns = [
 
     path('login/', views.login_user, name='login'),  # Login page
 
+    path('register/', views.register_user, name='register'),
+
     path('dashboard/',views.dashboard_view, name='dashboard'),
+    path('dashboard.html',views.dashboard_view, name='dashboard_view'),
+
 
     path('deposit/', views.deposit, name='deposit'),
     path('deposit.html', views.deposit_page, name='deposit_page'),

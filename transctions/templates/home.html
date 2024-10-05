@@ -1,18 +1,26 @@
-<!-- templates/home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
-    <h1>Welcome to the Home Page</h1>
-    <p>This is your first Django page rendered from an HTML file.</p>
 
-    <a href="{% url 'login' %}">
-        <button>Login</button>
-    </a>
+    <div class="container">
+        <h1>Welcome</h1>
+
+        <div class="button-container">
+            <a href="{% url 'login' %}">
+                <button>Login</button>
+            </a>
+            <a href="{% url 'register' %}">
+                <button>Register</button>
+            </a>
+        </div>
+    </div>
 
 </body>
 </html>
