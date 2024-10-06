@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %} ?v={ 1.0 }">
-    <link rel="stylesheet" href="{% static 'css/button.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %} ?v={v= 1.0 }">
+    <!-- <link rel="stylesheet" href="{% static 'css/button.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'css/logout.css' %} ?v={ v=1.0 }">
+
 
 </head>
 <body>
@@ -74,7 +76,10 @@
 
 
 <script src="{% static 'js/dashboard.js' %}"></script>
-<button class="back-button" onclick="goBack()">Back</button>
-<script src="{% static 'js/button.js' %}"></script>
+<button class="logout-button" onclick="logout()">logout</button>
+<!-- <button class="back-button" onclick="goBack()">Back</button> -->
+<!-- <script src="{% static 'js/button.js' %}"></script>  -->
+
+<script src="{% static 'js/logout.js' %}"></script>
 </body>
 </html>

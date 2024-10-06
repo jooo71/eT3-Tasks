@@ -181,10 +181,11 @@ def balance(request):
 
 
 
-# @api_view(['POST'])
-# def logout(request):
-#     # No need to handle refresh tokens or blacklisting, just return a response
-#     return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+@permission_classes(IsAuthenticated)
+def logout(request):
+    # No need to handle refresh tokens or blacklisting, just return a response
+    return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
 
 ##########################API front vue#########################3
 def home(request):
@@ -226,7 +227,9 @@ def register_user(request):
 
     return render(request, 'register.html')  # Render register form
 
+# from django.views.decorators.cache import cache_control
 
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 

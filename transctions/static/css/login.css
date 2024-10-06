@@ -47,4 +47,8 @@ button:hover {
     margin-top: 10px;
 } 
 
-
+#message {
+    
+    margin-bottom: 15px;
+    font-size: 130%;
+}

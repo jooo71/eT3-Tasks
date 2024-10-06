@@ -62,4 +62,6 @@ urlpatterns = [
     
     path('balance/', views.balance, name='balance'),
     path('balance.html', views.balance_page, name='balance_page'),
+
+    path('logout/',views.logout,name='logout'),
 ]

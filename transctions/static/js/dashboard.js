@@ -26,3 +26,12 @@ async function dashboard() {
     window.location.href = '/dasboard.html'
     
 }
+
+window.onload = function() {
+    const token = localStorage.getItem('access_token');
+    
+    // If token doesn't exist, redirect to login page
+    if (!token) {
+        window.location.href = '/login';
+    }
+};

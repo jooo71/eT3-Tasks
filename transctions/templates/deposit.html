@@ -7,6 +7,7 @@
     <title>Make Deposit</title>
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="{% static 'css/deposit.css' %} ?v={ v=1.0 }">
+    <link rel="stylesheet" href="{% static 'css/button.css' %}">
 </head>
 <body>
 
@@ -20,6 +21,8 @@
 
 <!-- Link to the external JavaScript file -->
 <script src="{% static 'js/deposit.js' %}"></script>
+<button class="back-button" onclick="goBack()">Back</button>
+<script src="{% static 'js/button.js' %}"></script>
 
 </body>
 </html>
