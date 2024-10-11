@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:wallet/api_service.dart';
 class DepositPage extends StatefulWidget {
   @override
   _DepositPageState createState() => _DepositPageState();
@@ -25,7 +25,7 @@ class _DepositPageState extends State<DepositPage> {
     String? token = await storage.read(key: 'jwt_token');
     final amount = _amountController.text;
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/deposit/');
+    final url = Uri.parse('${Config.baseUrl}/deposit/');
     final response = await http.post(
       url,
       headers: <String, String>{

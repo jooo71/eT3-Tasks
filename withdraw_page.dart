@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../api_service.dart';
+
 class WithdrawPage extends StatefulWidget {
   @override
   _WithdrawPageState createState() => _WithdrawPageState();
@@ -25,7 +27,7 @@ class _WithdrawPageState extends State<WithdrawPage> {
     String? token = await storage.read(key: 'jwt_token');
     final amount = _amountController.text;
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/withdraw/');
+    final url = Uri.parse('${Config.baseUrl}/withdraw/');
     final response = await http.post(
       url,
       headers: <String, String>{

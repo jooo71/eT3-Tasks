@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../api_service.dart';
+
 class TransferPage extends StatefulWidget {
   @override
   _TransferPageState createState() => _TransferPageState();
@@ -27,7 +29,7 @@ class _TransferPageState extends State<TransferPage> {
     final recipientPhone = _recipientPhoneController.text;
     final amount = _amountController.text;
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/transfer/');
+    final url = Uri.parse('${Config.baseUrl}/transfer/');
     final response = await http.post(
       url,
       headers: <String, String>{

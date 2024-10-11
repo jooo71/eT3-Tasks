@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../api_service.dart';
+
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
@@ -27,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final name = _nameController.text;
     final password = _passwordController.text;
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/register/');
+    final url = Uri.parse('${Config.baseUrl}/register/');
     final response = await http.post(
       url,
       headers: <String, String>{

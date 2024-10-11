@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dashboard_page.dart';
+import 'package:wallet/api_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     final phoneNumber = _phoneController.text;
     final password = _passwordController.text;
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/login/');
+    final url = Uri.parse('${Config.baseUrl}/login/');
     final response = await http.post(
       url,
       headers: <String, String>{

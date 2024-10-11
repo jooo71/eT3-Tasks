@@ -28,7 +28,7 @@ class _BalancePageState extends State<BalancePage> {
 
     String? token = await storage.read(key: 'jwt_token');
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/balance/');
+    final url = Uri.parse('http://192.168.1.15:8000/api/balance/');
     final response = await http.get(
       url,
       headers: {

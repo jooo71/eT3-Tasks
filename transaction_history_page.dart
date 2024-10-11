@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../api_service.dart';
+
 class TransactionHistoryPage extends StatefulWidget {
   @override
   _TransactionHistoryPageState createState() => _TransactionHistoryPageState();
@@ -28,7 +30,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
     String? token = await storage.read(key: 'jwt_token');
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/transaction-history/');
+    final url = Uri.parse('${Config.baseUrl}/transaction-history/');
     final response = await http.get(
       url,
       headers: {
