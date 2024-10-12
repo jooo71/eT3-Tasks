@@ -46,8 +46,8 @@ class _LoginPageState extends State<LoginPage> {
       // Save the token in secure storage
       await storage.write(key: 'jwt_token', value: token);
 
-      // Navigate to deposit page
-      Navigator.of(context).pushReplacement(
+      Navigator.push(
+        context,
         MaterialPageRoute(builder: (context) => DashboardPage()),
       );
     } else {
@@ -65,38 +65,102 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.blue.shade900,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
-              keyboardType: TextInputType.phone,
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            if (_errorMessage != null) ...[
-              SizedBox(height: 8),
-              Text(
-                _errorMessage!,
-                style: TextStyle(color: Colors.red),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade900, Colors.blue.shade100],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+
+              Icon(
+                Icons.app_shortcut,
+                size: 150.0,  // Large size for the icon
+                color: Colors.blue[900],  // Color for the icon
               ),
+              SizedBox(height: 50),
+              const Text(
+                'Welcome back you\'ve been missed',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+              SizedBox(height: 50),
+              TextField(
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                  hintText: 'Phone Number',
+                  hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                  prefixIcon: const Icon(Icons.phone),
+                ),
+
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 15),
+
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                  hintText: 'Password',
+                  hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                  prefixIcon: const Icon(Icons.password_outlined, size: 30),
+                ),
+                obscureText: true,
+              ),
+              if (_errorMessage != null) ...[
+                SizedBox(height: 8),
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ],
+              SizedBox(height: 16),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : SizedBox(
+                  width: 200,
+                  height: 50,
+
+                    child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                    primary: Colors.blue[900],
+                                    ),
+                                    onPressed: _login,
+                                    child: const Text('Login',style: TextStyle(color: Colors.white)),
+                                  ),
+                  ),
             ],
-            SizedBox(height: 16),
-            _isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-              onPressed: _login,
-              child: Text('Login'),
-            ),
-          ],
+          ),
         ),
       ),
     );

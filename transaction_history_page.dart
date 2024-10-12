@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../api_service.dart';
+import 'package:intl/intl.dart'; // Import this package at the top
 
 class TransactionHistoryPage extends StatefulWidget {
   @override
@@ -57,42 +58,93 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transaction History'),
+        title: Text('Transaction History', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue.shade900,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : _errorMessage != null
-            ? Center(
-          child: Text(
-            _errorMessage!,
-            style: TextStyle(color: Colors.red),
+      body: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade900, Colors.blue.shade100],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        )
-            : _transactions.isEmpty
-            ? Center(child: Text('No transactions available'))
-            : ListView.builder(
-          itemCount: _transactions.length,
-          itemBuilder: (context, index) {
-            var transaction = _transactions[index];
-            return ListTile(
-              title: Text(transaction['transaction_type']),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                      'Amount: ${transaction['amount']}'),
-                  if (transaction['recipient'] != null)
-                    Text(
-                        'Recipient: ${transaction['recipient']}'),
-                  Text('Date: ${transaction['date']}'),
-                ],
-              ),
-            );
-          },
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : _errorMessage != null
+              ? Center(
+            child: Text(
+              _errorMessage!,
+              style: TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          )
+              : _transactions.isEmpty
+              ? Center(
+            child: Text(
+              'No transactions available',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          )
+              : ListView.builder(
+            itemCount: _transactions.length,
+            itemBuilder: (context, index) {
+              var transaction = _transactions[index];
+              DateTime dateTime = DateTime.parse(transaction['date']);
+              String formattedDate = DateFormat('MMM. d, yyyy, h:mm a').format(dateTime);
+              // String recipientName = transaction['recipient']['name'].toString();
+              String recipientName = (transaction['recipient'] != null) ? (transaction['recipient']['name']): 'unkown';
+
+              return Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0),
+                padding: EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: ListTile(
+                  title: Text(
+                    transaction['transaction_type'],
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 4),
+                      Text(
+                        'Amount: \$${transaction['amount']}',
+                        style: TextStyle(fontSize: 16, color: Colors.black87),
+                      ),
+                      // if (transaction['recipient'] != null)
+                        Text(
+                          'Recipient: $recipientName',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                      Text(
+                        'Date: $formattedDate', // Use the formatted date,
+                        style: TextStyle(fontSize: 14, color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

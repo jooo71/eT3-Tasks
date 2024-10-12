@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import '../api_service.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -19,6 +18,14 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _successMessage;
 
   Future<void> _register() async {
+    // Validate inputs
+    if (_phoneController.text.isEmpty || _nameController.text.isEmpty || _passwordController.text.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please fill in all fields.';
+      });
+      return; // Exit the function if validation fails
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -61,50 +68,117 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register', style: TextStyle(color: Colors.black)),
+        backgroundColor: Colors.blue.shade900,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _phoneController,
-              decoration: InputDecoration(labelText: 'Phone Number'),
-              keyboardType: TextInputType.phone,
-            ),
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 16),
-            if (_isLoading)
-              CircularProgressIndicator()
-            else
-              ElevatedButton(
-                onPressed: _register,
-                child: Text('Register'),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade900, Colors.blue.shade100],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+               Icon(
+                Icons.app_registration,
+                size: 150.0,  // Large size for the icon
+                color: Colors.blue[900],  // Color for the icon
               ),
-            if (_successMessage != null) ...[
+              const SizedBox(height: 60),
+              TextField(
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                  hintText: 'Phone Number',
+                  hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                  prefixIcon: const Icon(Icons.phone),
+                ),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                  hintText: 'Name',
+                  hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                  prefixIcon: const Icon(Icons.abc_sharp, size: 30),
+                ),
+              ),
+              const SizedBox(height: 15),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(80.0),
+                    borderSide: const BorderSide(color: Colors.black),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                  hintText: 'Password',
+                  hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                  prefixIcon: const Icon(Icons.password_outlined, size: 30),
+                ),
+                obscureText: true,
+              ),
               SizedBox(height: 16),
-              Text(
-                _successMessage!,
-                style: TextStyle(color: Colors.green),
-              ),
+              if (_isLoading)
+                CircularProgressIndicator()
+              else
+                SizedBox(
+                  width: 200,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.blue[900],
+                    ),
+                    onPressed: _register,
+                    child: Text('Register', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              if (_successMessage != null) ...[
+                SizedBox(height: 16),
+                Text(
+                  _successMessage!,
+                  style: TextStyle(color: Color(0xFF062806), fontSize: 20),
+                ),
+              ],
+              if (_errorMessage != null) ...[
+                SizedBox(height: 16),
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red),
+                ),
+              ],
             ],
-            if (_errorMessage != null) ...[
-              SizedBox(height: 16),
-              Text(
-                _errorMessage!,
-                style: TextStyle(color: Colors.red),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );

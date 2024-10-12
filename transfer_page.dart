@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-import '../api_service.dart';
+import 'package:wallet/api_service.dart';
 
 class TransferPage extends StatefulWidget {
   @override
@@ -60,48 +59,96 @@ class _TransferPageState extends State<TransferPage> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transfer'),
+        title: Text('Transfer', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue.shade900,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _recipientPhoneController,
-              decoration: InputDecoration(labelText: 'Recipient Phone Number'),
-              keyboardType: TextInputType.phone,
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: _amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 16),
-            _isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-              onPressed: _transfer,
-              child: Text('Transfer'),
-            ),
-            if (_successMessage != null) ...[
-              SizedBox(height: 16),
-              Text(
-                _successMessage!,
-                style: TextStyle(color: Colors.green),
+      body: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade900, Colors.blue.shade100],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: _recipientPhoneController,
+                decoration: InputDecoration(
+                  hintText: 'Recipient Phone Number',
+                  labelStyle: TextStyle(color: Colors.white),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                keyboardType: TextInputType.phone,
+                style: TextStyle(color: Colors.black),
               ),
-            ],
-            if (_errorMessage != null) ...[
               SizedBox(height: 16),
-              Text(
-                _errorMessage!,
-                style: TextStyle(color: Colors.red),
+              TextField(
+                controller: _amountController,
+                decoration: InputDecoration(
+                  hintText: 'Amount',
+                  labelStyle: TextStyle(color: Colors.white),
+                  filled: true,
+                  fillColor: Colors.white.withOpacity(1),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                style: TextStyle(color: Colors.black),
               ),
+              SizedBox(height: 16),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(
+                onPressed: _transfer,
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue.shade900, // Button color
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 15,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Transfer',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
+                ),
+              ),
+              if (_successMessage != null) ...[
+                SizedBox(height: 16),
+                Text(
+                  _successMessage!,
+                  style: TextStyle(color: Color(0xFF062806), fontSize: 20),
+                ),
+              ],
+              if (_errorMessage != null) ...[
+                SizedBox(height: 16),
+                Text(
+                  _errorMessage!,
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
