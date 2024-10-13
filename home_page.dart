@@ -5,14 +5,14 @@ import 'login_page.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Get screen size including the notch area
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text('Home',style: TextStyle(color: Colors.black87,fontSize: 50),),
-      //   backgroundColor: Colors.blue,
-      //
-      // ),
       body: Container(
+        width: screenWidth,
+        height: screenHeight,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [Colors.blue.shade900, Colors.blue.shade100],
@@ -24,58 +24,49 @@ class HomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Add the image here
+              // Image section with fixed height
               Padding(
-                padding: const EdgeInsets.only(left: 30.0,bottom: 150),
+                padding: const EdgeInsets.symmetric(vertical: 40.0),
                 child: Image.asset(
                   'assets/wallet.png', // Replace with your image path
-                  height: 200, // Adjust height according to your needs
+                  height: 200, // Fixed height regardless of orientation
                 ),
               ),
-              // SizedBox(height: 40), // Add space between image and buttons
+              // Button section
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 150),
-                    child: SizedBox(
-                      width: 200,
-                      height: 50,
-
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.blue[900],
-
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => RegisterPage()),
-                          );
-                        },
-                        child: const Text('Register',style: TextStyle(color: Colors.white),),
+                  SizedBox(
+                    width: screenWidth * 0.35, // Use percentage of screen width
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue[900],
                       ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RegisterPage()),
+                        );
+                      },
+                      child: const Text('Register', style: TextStyle(color: Colors.white)),
                     ),
                   ),
-                  SizedBox(width: 20), // Space between the two buttons
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 150),
-                    child: SizedBox(
-                      width: 200,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.blue[900],
-
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginPage()),
-                          );
-                        },
-                        child: const Text('Login',style: TextStyle(color: Colors.white),),
+                  SizedBox(width: 20), // Space between buttons
+                  SizedBox(
+                    width: screenWidth * 0.35, // Use percentage of screen width
+                    height: 50,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue[900],
                       ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                      child: const Text('Login', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ],

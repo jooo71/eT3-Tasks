@@ -101,7 +101,7 @@ class _BalancePageState extends State<BalancePage> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  '$_balance\$',
+                  '$_balance \$',
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,

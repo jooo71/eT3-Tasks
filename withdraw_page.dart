@@ -64,71 +64,73 @@ class _WithdrawPageState extends State<WithdrawPage> {
         title: Text('Withdraw', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue.shade900,
       ),
-      body: Container(
-        width: width,
-        height: height,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade900, Colors.blue.shade100],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: SingleChildScrollView(
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue.shade900, Colors.blue.shade100],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextField(
-                controller: _amountController,
-                decoration: InputDecoration(
-                  hintText: 'Amount',
-                  labelStyle: TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: Colors.white.withOpacity(1),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: _amountController,
+                  decoration: InputDecoration(
+                    hintText: 'Amount',
+                    labelStyle: TextStyle(color: Colors.white),
+                    filled: true,
+                    fillColor: Colors.white.withOpacity(1),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(color: Colors.black),
                 ),
-                keyboardType: TextInputType.number,
-                style: TextStyle(color: Colors.black),
-              ),
-              SizedBox(height: 16),
-              _isLoading
-                  ? CircularProgressIndicator()
-                  : ElevatedButton(
-                onPressed: _withdraw,
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue.shade900, // Button color
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 15,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  'Withdraw',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ),
-              if (_successMessage != null) ...[
                 SizedBox(height: 16),
-                Text(
-                  _successMessage!,
-                  style: TextStyle(color: Color(0xFF062806), fontSize: 20),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                  onPressed: _withdraw,
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.blue.shade900, // Button color
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    'Withdraw',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
+                if (_successMessage != null) ...[
+                  SizedBox(height: 16),
+                  Text(
+                    _successMessage!,
+                    style: TextStyle(color: Color(0xFF062806), fontSize: 20),
+                  ),
+                ],
+                if (_errorMessage != null) ...[
+                  SizedBox(height: 16),
+                  Text(
+                    _errorMessage!,
+                    style: TextStyle(color: Colors.red, fontSize: 16),
+                  ),
+                ],
               ],
-              if (_errorMessage != null) ...[
-                SizedBox(height: 16),
-                Text(
-                  _errorMessage!,
-                  style: TextStyle(color: Colors.red, fontSize: 16),
-                ),
-              ],
-            ],
+            ),
           ),
         ),
       ),

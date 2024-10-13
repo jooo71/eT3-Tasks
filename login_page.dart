@@ -63,9 +63,17 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+    final isPortrait = mediaQuery.orientation == Orientation.portrait;
+    final iconSize = isPortrait ? screenHeight * 0.15 : screenHeight * 0.25;
+    final buttonsize = isPortrait ?  screenHeight * 0.07 : screenHeight * 0.16; // second number is portrait number
+
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login', style: TextStyle(color: Colors.black)),
+        title: const Text('Login', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue.shade900,
       ),
       body: Container(
@@ -76,90 +84,94 @@ class _LoginPageState extends State<LoginPage> {
             end: Alignment.bottomRight,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-
-              Icon(
-                Icons.app_shortcut,
-                size: 150.0,  // Large size for the icon
-                color: Colors.blue[900],  // Color for the icon
-              ),
-              SizedBox(height: 50),
-              const Text(
-                'Welcome back you\'ve been missed',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-              SizedBox(height: 50),
-              TextField(
-                controller: _phoneController,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(80.0),
-                    borderSide: const BorderSide(color: Colors.black),
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: screenHeight, // Ensure minimum height matches the screen
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.05), // Add some space
+                  Icon(
+                    Icons.app_shortcut,
+                    size: iconSize ,  // Dynamic icon size
+                    color: Colors.blue[900],  // Color for the icon
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(80.0),
-                    borderSide: const BorderSide(color: Colors.black),
+                  SizedBox(height: screenHeight * 0.05), // Add some space
+                  const Text(
+                    'Welcome back you\'ve been missed',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                    ),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey.shade50,
-                  hintText: 'Phone Number',
-                  hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
-                  prefixIcon: const Icon(Icons.phone),
-                ),
-
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 15),
-
-              TextField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(80.0),
-                    borderSide: const BorderSide(color: Colors.black),
+                  SizedBox(height: screenHeight * 0.05), // Add some space
+                  TextField(
+                    controller: _phoneController,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(80.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(80.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                      hintText: 'Phone Number',
+                      hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                      prefixIcon: const Icon(Icons.phone),
+                    ),
+                    keyboardType: TextInputType.phone,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(80.0),
-                    borderSide: const BorderSide(color: Colors.black),
+                  const SizedBox(height: 15),
+                  TextField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(80.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(80.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                      hintText: 'Password',
+                      hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
+                      prefixIcon: const Icon(Icons.password_outlined, size: 30),
+                    ),
+                    obscureText: true,
                   ),
-                  filled: true,
-                  fillColor: Colors.grey.shade50,
-                  hintText: 'Password',
-                  hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 15),
-                  prefixIcon: const Icon(Icons.password_outlined, size: 30),
-                ),
-                obscureText: true,
-              ),
-              if (_errorMessage != null) ...[
-                SizedBox(height: 8),
-                Text(
-                  _errorMessage!,
-                  style: TextStyle(color: Colors.red),
-                ),
-              ],
-              SizedBox(height: 16),
-              _isLoading
-                  ? CircularProgressIndicator()
-                  : SizedBox(
-                  width: 200,
-                  height: 50,
-
+                  if (_errorMessage != null) ...[
+                    SizedBox(height: 8),
+                    Text(
+                      _errorMessage!,
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                  SizedBox(height: 16),
+                  _isLoading
+                      ? CircularProgressIndicator()
+                      : SizedBox(
+                    width: screenWidth * 0.5,  // Dynamic button width
+                    height: buttonsize, // Dynamic button height
                     child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                    primary: Colors.blue[900],
-                                    ),
-                                    onPressed: _login,
-                                    child: const Text('Login',style: TextStyle(color: Colors.white)),
-                                  ),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue[900],
+                      ),
+                      onPressed: _login,
+                      child: const Text('Login', style: TextStyle(color: Colors.white)),
+                    ),
                   ),
-            ],
+                ],
+              ),
+            ),
           ),
         ),
       ),
