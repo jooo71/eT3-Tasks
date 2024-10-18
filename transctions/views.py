@@ -115,69 +115,69 @@ def balance(request):
     # Return the user's balance
     return Response({'message': f"{user.name}'s balance is {user.balance}.",'balance':user.balance})
 
-# # Transaction History view
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def transaction_history(request):
-#     user = request.user  # Get the authenticated user from the request
+# Transaction History view
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def transaction_history(request):
+    user = request.user  # Get the authenticated user from the request
 
-#     # Fetch all transactions where the user is either the sender or recipient
-#     transactions = Transaction.objects.filter(sender=user) | Transaction.objects.filter(recipient=user)
+    # Fetch all transactions where the user is either the sender or recipient
+    transactions = Transaction.objects.filter(sender=user) | Transaction.objects.filter(recipient=user)
 
-#     # Serialize the transactions
-#     serializer = TransactionSerializer(transactions, many=True)
+    # Serialize the transactions
+    serializer = TransactionSerializer(transactions, many=True)
 
-#     # Return the serialized data
-#     return Response(serializer.data)
+    # Return the serialized data
+    return Response(serializer.data)
 
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def register_user(request):
-#     phone_number = request.data.get('phone_number')
-#     password = request.data.get('password')
-#     name = request.data.get('name')
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register_user(request):
+    phone_number = request.data.get('phone_number')
+    password = request.data.get('password')
+    name = request.data.get('name')
 
-#     # Check if all required fields are provided
-#     if phone_number is None or password is None or name is None:
-#         return Response({'error': 'Please provide phone number, name, and password.'}, status=status.HTTP_400_BAD_REQUEST)
+    # Check if all required fields are provided
+    if phone_number is None or password is None or name is None:
+        return Response({'error': 'Please provide phone number, name, and password.'}, status=status.HTTP_400_BAD_REQUEST)
 
-#     # Check if the phone number already exists
-#     if User.objects.filter(phone_number=phone_number).exists():
-#         return Response({'error': 'Phone number already registered.'}, status=status.HTTP_400_BAD_REQUEST)
+    # Check if the phone number already exists
+    if User.objects.filter(phone_number=phone_number).exists():
+        return Response({'error': 'Phone number already registered.'}, status=status.HTTP_400_BAD_REQUEST)
 
-#     # Create a new user and hash the password using set_password
-#     user = User.objects.create(phone_number=phone_number, name=name)
-#     user.set_password(password)  # Ensure password is hashed
-#     user.save()
+    # Create a new user and hash the password using set_password
+    user = User.objects.create(phone_number=phone_number, name=name)
+    user.set_password(password)  # Ensure password is hashed
+    user.save()
 
-#     # Generate only an access token for the new user
-#     access_token = AccessToken.for_user(user)
+    # Generate only an access token for the new user
+    access_token = AccessToken.for_user(user)
 
-#     return Response({
-#         'access': str(access_token),
-#     }, status=status.HTTP_201_CREATED)
+    return Response({
+        'access': str(access_token),
+    }, status=status.HTTP_201_CREATED)
 
 
 
-# @api_view(['POST'])
-# @permission_classes([AllowAny])
-# def login_user(request):
-#     phone_number = request.data.get('phone_number')
-#     password = request.data.get('password')
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login_user(request):
+    phone_number = request.data.get('phone_number')
+    password = request.data.get('password')
 
-#     # Authenticate user
-#     user = authenticate(request, phone_number=phone_number, password=password)
-#     if user is not None:
-#         # Generate only an access token
-#         access_token = AccessToken.for_user(user)
-#         return Response({
-#             'access': str(access_token),
-#             'user':{
-#                 'name': user.name,  # Assuming 'name' field exists in the User model
-#             }
-#         })
-#     else:
-#         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+    # Authenticate user
+    user = authenticate(request, phone_number=phone_number, password=password)
+    if user is not None:
+        # Generate only an access token
+        access_token = AccessToken.for_user(user)
+        return Response({
+            'access': str(access_token),
+            'user':{
+                'name': user.name,  # Assuming 'name' field exists in the User model
+            }
+        })
+    else:
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -191,85 +191,85 @@ def logout(request):
 def home(request):
     return render(request, 'home.html')
 
-@api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
-def login_user(request):
-    if request.method == 'POST':
-        phone_number = request.data.get('phone_number')
-        password = request.data.get('password')
+# @api_view(['GET', 'POST'])
+# @permission_classes([AllowAny])
+# def login_user(request):
+#     if request.method == 'POST':
+#         phone_number = request.data.get('phone_number')
+#         password = request.data.get('password')
 
-        user = authenticate(request, phone_number=phone_number, password=password)
-        if user:
-            access_token = AccessToken.for_user(user)
-            return JsonResponse({'access': str(access_token), 'user': {'name': user.name}})
-        else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+#         user = authenticate(request, phone_number=phone_number, password=password)
+#         if user:
+#             access_token = AccessToken.for_user(user)
+#             return JsonResponse({'access': str(access_token), 'user': {'name': user.name}})
+#         else:
+#             return JsonResponse({'error': 'Invalid credentials'}, status=400)
 
-    return render(request, 'login.html')  # Render login form
+#     return render(request, 'login.html')  # Render login form
 
-@api_view(['GET', 'POST'])
-@permission_classes([AllowAny])
-def register_user(request):
-    if request.method == 'POST':
-        phone_number = request.data.get('phone_number')
-        password = request.data.get('password')
-        name = request.data.get('name')
+# @api_view(['GET', 'POST'])
+# @permission_classes([AllowAny])
+# def register_user(request):
+#     if request.method == 'POST':
+#         phone_number = request.data.get('phone_number')
+#         password = request.data.get('password')
+#         name = request.data.get('name')
 
-        if User.objects.filter(phone_number=phone_number).exists():
-            return JsonResponse({'error': 'Phone number already registered.'}, status=400)
+#         if User.objects.filter(phone_number=phone_number).exists():
+#             return JsonResponse({'error': 'Phone number already registered.'}, status=400)
 
-        user = User.objects.create(phone_number=phone_number, name=name)
-        user.set_password(password)
-        user.save()
+#         user = User.objects.create(phone_number=phone_number, name=name)
+#         user.set_password(password)
+#         user.save()
 
-        access_token = AccessToken.for_user(user)
-        return JsonResponse({'access': str(access_token)}, status=201)
+#         access_token = AccessToken.for_user(user)
+#         return JsonResponse({'access': str(access_token)}, status=201)
 
-    return render(request, 'register.html')  # Render register form
+#     return render(request, 'register.html')  # Render register form
 
-# from django.views.decorators.cache import cache_control
+# # from django.views.decorators.cache import cache_control
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def dashboard_view(request):
-    return render(request, 'dashboard.html')
+# # @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# def dashboard_view(request):
+#     return render(request, 'dashboard.html')
 
-def deposit_page(request):
-    return render(request, 'deposit.html')
+# def deposit_page(request):
+#     return render(request, 'deposit.html')
 
-def withdraw_page(request):
-    return render(request, 'withdraw.html')
+# def withdraw_page(request):
+#     return render(request, 'withdraw.html')
 
-def payBill_page(request):
-    return render(request, 'payBill.html')
+# def payBill_page(request):
+#     return render(request, 'payBill.html')
 
-def buyAirtime_page(request):
-    return render(request, 'buyAirtime.html')
+# def buyAirtime_page(request):
+#     return render(request, 'buyAirtime.html')
 
-def transfer_page(request):
-    return render(request, 'transfer.html')
+# def transfer_page(request):
+#     return render(request, 'transfer.html')
 
-def transactionHistory_page(request):
-    return render(request, 'transactionHistory.html')
+# def transactionHistory_page(request):
+#     return render(request, 'transactionHistory.html')
 
-def balance_page(request):
-    return render(request, 'balance.html')
+# def balance_page(request):
+#     return render(request, 'balance.html')
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def transactionHistory(request):
-    user = request.user
-    transactions = Transaction.objects.filter(sender=user)  # Fetch transactions for the authenticated user
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def transactionHistory(request):
+#     user = request.user
+#     transactions = Transaction.objects.filter(sender=user)  # Fetch transactions for the authenticated user
 
-    # Create a list to hold transaction data
-    transaction_data = []
+#     # Create a list to hold transaction data
+#     transaction_data = []
 
-    for transaction in transactions:
-        transaction_data.append({
-            'date': transaction.date,  # Assuming you have a timestamp field `created_at`
-            'transaction_type': transaction.transaction_type,
-            'amount': transaction.amount,
-            'recipient': transaction.recipient.name if transaction.recipient else None,  # If you have a recipient field
-            'balance_after': user.balance  # Assuming you have a balance attribute on your user model
-        })
+#     for transaction in transactions:
+#         transaction_data.append({
+#             'date': transaction.date,  # Assuming you have a timestamp field `created_at`
+#             'transaction_type': transaction.transaction_type,
+#             'amount': transaction.amount,
+#             'recipient': transaction.recipient.name if transaction.recipient else None,  # If you have a recipient field
+#             'balance_after': user.balance  # Assuming you have a balance attribute on your user model
+#         })
 
-    return Response({'transactions': transaction_data}, status=status.HTTP_200_OK)
+#     return Response({'transactions': transaction_data}, status=status.HTTP_200_OK)

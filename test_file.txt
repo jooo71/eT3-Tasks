@@ -1,4 +1,1 @@
-hksbvh
-hksbvh
-joo
-essam
+pip install pytest pytest-django
