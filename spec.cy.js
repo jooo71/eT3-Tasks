@@ -9,12 +9,27 @@ describe('API Tests', () => {
       password: 'password123',     // Replace with your test data
       name: 'Test User'
     };
+    const testUser2 = {
+      phone_number: '1234567899',  // Replace with your test data
+      password: 'password123',     // Replace with your test data
+      name: 'Test2 User'
+    };
 
   it('should register a new user', () => {
     cy.request('POST', `${apiUrl}/register/`, {
       phone_number: testUser.phone_number,
       password: testUser.password,
       name: 'Test User'
+    }).then((response) => {
+      expect(response.status).to.eq(201);
+      expect(response.body).to.have.property('access');
+    });
+  });
+  it('should register a new user', () => {
+    cy.request('POST', `${apiUrl}/register/`, {
+      phone_number: testUser2.phone_number,
+      password: testUser2.password,
+      name: 'Test2 User'
     }).then((response) => {
       expect(response.status).to.eq(201);
       expect(response.body).to.have.property('access');
@@ -158,9 +173,480 @@ describe('API Tests', () => {
   });
 });
 
-///////////////////////////////////////////////////////////////////////////////////
 
-describe('Full Flow', () => {
+describe('Deposit Functionality Tests', () => {
+  
+  const apiUrl = 'http://localhost:8000/api';
+
+  const testUser2 = {
+    phone_number: '1234567899',  // Replace with your test data
+    password: 'password123',     // Replace with your test data
+    name: 'Test2 User'
+  };
+
+  let accessToken = '';
+  // Step 2: Log in the user and store the token
+  it('should log in the user and get a token', () => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/login/`,
+      body: {
+        phone_number: testUser2.phone_number,
+        password: testUser2.password
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        accessToken = response.body.access;
+        expect(accessToken).to.exist;
+        cy.log('Login successful, token acquired.');
+      } else {
+        throw new Error('Login failed. Cannot proceed with further tests.');
+      }
+    });
+  });
+  // Successful deposit case
+  it('should perform a successful deposit using the token', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/deposit/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 1000  // Example valid amount
+      }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('message');
+      cy.log('Deposit successful.');
+    });
+  });
+
+  // Deposit with zero amount
+  it('should fail to deposit with zero amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/deposit/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 0  // Invalid amount
+      },
+      failOnStatusCode: false  // We want to capture the error response
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Amount must be greater than zero.'); // Adjust based on your API response
+      cy.log('Failed to deposit with zero amount.');
+    });
+  });
+
+  // Deposit with a negative amount
+  it('should fail to deposit with a negative amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/deposit/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: -500  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Amount must be greater than zero.'); // Adjust based on your API response
+      cy.log('Failed to deposit with a negative amount.');
+    });
+  });
+
+  // Deposit with invalid token
+  it('should fail to deposit with an invalid token', () => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/deposit/`,
+      headers: {
+        Authorization: `Bearer invalid_token`
+      },
+      body: {
+        amount: 1000  // Valid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(401); // Expect unauthorized
+      expect(response.body).to.have.property('error', 'Invalid token.'); // Adjust based on your API response
+      cy.log('Failed to deposit with an invalid token.');
+    });
+  });
+
+  // Deposit with a non-numeric value
+  it('should fail to deposit with a non-numeric amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/deposit/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 'abc'  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Invalid amount.'); // Adjust based on your API response
+      cy.log('Failed to deposit with a non-numeric amount.');
+    });
+  });
+});
+///////////////////////////////*****************************************************************************////////////////////
+describe('Withdraw Functionality Tests', () => {
+  const apiUrl = 'http://localhost:8000/api';
+
+  const testUser2 = {
+    phone_number: '1234567899',  // Replace with your test data
+    password: 'password123',     // Replace with your test data
+    name: 'Test2 User'
+  };
+
+  let accessToken = '';
+  // Step 2: Log in the user and store the token
+  it('should log in the user and get a token', () => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/login/`,
+      body: {
+        phone_number: testUser2.phone_number,
+        password: testUser2.password
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        accessToken = response.body.access;
+        expect(accessToken).to.exist;
+        cy.log('Login successful, token acquired.');
+      } else {
+        throw new Error('Login failed. Cannot proceed with further tests.');
+      }
+    });
+  });
+
+  // Assume you have a way to set up the accessToken here before the tests
+
+  // Successful withdrawal case
+  it('should perform a successful withdrawal using the token', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/withdraw/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 50  // Example valid amount
+      }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('message');
+      cy.log('Withdraw successful.');
+    });
+  });
+
+  // Withdrawal with insufficient funds
+  it('should fail to withdraw with insufficient funds', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/withdraw/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 1000000  // Attempting to withdraw more than the available balance
+      },
+      failOnStatusCode: false  // We want to capture the error response
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Insufficient funds.'); // Adjust based on your API response
+      cy.log('Failed to withdraw with insufficient funds.');
+    });
+  });
+
+  // Withdrawal with zero amount
+  it('should fail to withdraw with zero amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/withdraw/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 0  // Invalid amount
+      },
+      failOnStatusCode: false  // We want to capture the error response
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Amount must be greater than zero.'); // Adjust based on your API response
+      cy.log('Failed to withdraw with zero amount.');
+    });
+  });
+
+  // Withdrawal with negative amount
+  it('should fail to withdraw with a negative amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/withdraw/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: -50  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Amount must be greater than zero.'); // Adjust based on your API response
+      cy.log('Failed to withdraw with a negative amount.');
+    });
+  });
+
+  // Withdrawal with invalid token
+  it('should fail to withdraw with an invalid token', () => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/withdraw/`,
+      headers: {
+        Authorization: `Bearer invalid_token`
+      },
+      body: {
+        amount: 50  // Valid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(401); // Expect unauthorized
+      expect(response.body).to.have.property('error', 'Invalid token.'); // Adjust based on your API response
+      cy.log('Failed to withdraw with an invalid token.');
+    });
+  });
+
+  // Withdrawal with a non-numeric value
+  it('should fail to withdraw with a non-numeric amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/withdraw/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 'abc'  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Invalid amount.'); // Adjust based on your API response
+      cy.log('Failed to withdraw with a non-numeric amount.');
+    });
+  });
+});
+////////////////******************************************************************************/////////////////
+describe('Transfer Functionality Tests', () => {
+  const apiUrl = 'http://localhost:8000/api';
+
+  const testUser2 = {
+    phone_number: '1234567899',  // Replace with your test data
+    password: 'password123',     // Replace with your test data
+    name: 'Test2 User'
+  };
+
+  let accessToken = '';
+  // Step 2: Log in the user and store the token
+  it('should log in the user and get a token', () => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/login/`,
+      body: {
+        phone_number: testUser2.phone_number,
+        password: testUser2.password
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        accessToken = response.body.access;
+        expect(accessToken).to.exist;
+        cy.log('Login successful, token acquired.');
+      } else {
+        throw new Error('Login failed. Cannot proceed with further tests.');
+      }
+    });
+  });
+
+  // Successful transfer case
+  it('should perform a successful transfer using the token', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/transfer/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        recipient_phone: '01110989460',  // Replace with a valid recipient phone number
+        amount: 100  // Example valid amount
+      }
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('recipient_name');
+      cy.log('Transfer successful.');
+    });
+  });
+
+  // Transfer with insufficient funds
+  it('should fail to transfer with insufficient funds', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/transfer/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        recipient_phone: '01110989460',  // Replace with a valid recipient phone number
+        amount: 1000000  // Attempting to transfer more than the available balance
+      },
+      failOnStatusCode: false  // We want to capture the error response
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Insufficient funds.'); // Adjust based on your API response
+      cy.log('Failed to transfer with insufficient funds.');
+    });
+  });
+
+  // Transfer to a non-existent phone number
+  it('should fail to transfer to a non-existent phone number', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/transfer/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        recipient_phone: '0000000000',  // Attempting to transfer to a non-existent phone number
+        amount: 100  // Example amount
+      },
+    }).then((response) => {
+      // Expect a 404 error or any error status code from your API
+      expect(response.status).to.eq(404); // Ensure it matches the status code your API returns
+      expect(response.body).to.have.property('error', 'Recipient not found.'); // Match with the actual error message from your API
+      cy.log('Failed to transfer to a non-existent phone number.');
+    });
+  });
+
+  // Transfer with zero amount
+  it('should fail to transfer with zero amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/transfer/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        recipient_phone: '01110989460',  // Valid recipient phone number
+        amount: 0  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Amount must be greater than zero.'); // Adjust based on your API response
+      cy.log('Failed to transfer with zero amount.');
+    });
+  });
+
+  // Transfer with negative amount
+  it('should fail to transfer with a negative amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/transfer/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        recipient_phone: '01110989460',  // Valid recipient phone number
+        amount: -50  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Amount must be greater than zero.'); // Adjust based on your API response
+      cy.log('Failed to transfer with a negative amount.');
+    });
+  });
+
+  // Transfer with invalid token
+  it('should fail to transfer with an invalid token', () => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/transfer/`,
+      headers: {
+        Authorization: `Bearer invalid_token`
+      },
+      body: {
+        recipient_phone: '01110989460',  // Valid recipient phone number
+        amount: 100  // Valid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(401); // Expect unauthorized
+      expect(response.body).to.have.property('error', 'Invalid token.'); // Adjust based on your API response
+      cy.log('Failed to transfer with an invalid token.');
+    });
+  });
+
+  // Transfer with a non-numeric amount
+  it('should fail to transfer with a non-numeric amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/transfer/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        recipient_phone: '01110989460',  // Valid recipient phone number
+        amount: 'abc'  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400); // Expect a bad request
+      expect(response.body).to.have.property('error', 'Invalid amount.'); // Adjust based on your API response
+      cy.log('Failed to transfer with a non-numeric amount.');
+    });
+  });
+});
+//////////////////////////////////////////*********************************************************************////////////
+
+describe('Bill Payment Tests', () => {
 
   const apiUrl = 'http://localhost:8000/api';
 
@@ -172,26 +658,6 @@ describe('Full Flow', () => {
 
   let accessToken = '';
 
-  // Step 1: Register the user if not already registered
-  it('should register a new user if not already registered', () => {
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/register/`,
-      body: {
-        phone_number: testUser2.phone_number,
-        password: testUser2.password,
-        name: testUser2.name
-      },
-    }).then((response) => {
-      if (response.status === 201) {
-        cy.log('User registered successfully.');
-      } else if (response.status === 400 && response.body.error === 'Phone number already registered.') {
-        cy.log('User already exists. Skipping registration.');
-      } else {
-        throw new Error('Failed to register the user.');
-      }
-    });
-  });
 
   // Step 2: Log in the user and store the token
   it('should log in the user and get a token', () => {
@@ -213,72 +679,8 @@ describe('Full Flow', () => {
     });
   });
 
-  // Step 3: Perform deposit action
-  it('should perform deposit using the token', () => {
-    if (!accessToken) return;
-
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/deposit/`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: {
-        amount: 1000  // Example amount
-      }
-    }).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body).to.have.property('message');
-      cy.log('Deposit successful.');
-    });
-  });
-
-  // Step 4: Perform withdraw action
-  it('should perform withdraw using the token', () => {
-    if (!accessToken) return;
-
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/withdraw/`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: {
-        amount: 50  // Example amount
-      }
-    }).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body).to.have.property('message');
-      cy.log('Withdraw successful.');
-    });
-  });
-
-  // Step 5: Perform transfer action
-  it('should perform transfer using the token', () => {
-    if (!accessToken) return;
-
-    cy.request({
-      method: 'POST',
-      url: `${apiUrl}/transfer/`,
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: {
-        recipient_phone: '01110989460',  // Replace with a valid recipient phone number
-        amount: 10000  // Example amount
-      }
-    }).then((response) => {
-      if (response.status === 200) {
-        cy.log('Transfer successful.');
-        expect(response.body).to.have.property('recipient_name');
-      } else if (response.status === 400 || response.status === 404) {
-        cy.log('Transfer failed: ' + response.body.error);
-      }
-    });
-  });
-
-  // Step 6: Perform pay bill action
-  it('should pay bill using the token', () => {
+  // Case 1: Successful bill payment
+  it('should pay the bill successfully using the token', () => {
     if (!accessToken) return;
 
     cy.request({
@@ -292,14 +694,113 @@ describe('Full Flow', () => {
         amount: 75  // Example amount
       }
     }).then((response) => {
-      expect(response.status).to.eq(200);
+      expect(response.status).to.eq(200);  // Success status
       expect(response.body).to.have.property('message');
       cy.log('Bill payment successful.');
     });
   });
 
-  // Step 7: Perform buy airtime action
-  it('should buy airtime using the token', () => {
+  // Case 2: Invalid bill type
+  it('should fail to pay the bill with an invalid bill type', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/pay-bill/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        bill_type: 'invalid_type',  // Invalid bill type
+        amount: 75
+      },
+      failOnStatusCode: false  // Prevents Cypress from failing on non-2xx status codes
+    }).then((response) => {
+      expect(response.status).to.eq(400);  // Adjust based on the actual API response
+      expect(response.body).to.have.property('error', 'Invalid bill type.'); // Match error message returned by your API
+      cy.log('Failed to pay bill due to invalid bill type.');
+    });
+  });
+
+  // Case 3: Invalid amount (too low or too high)
+  it('should fail to pay the bill with an invalid amount', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/pay-bill/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        bill_type: 'electricity',  // Example bill type
+        amount: -10  // Invalid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400);  // Adjust based on your API
+      expect(response.body).to.have.property('error', 'Invalid amount.');
+      cy.log('Failed to pay bill due to invalid amount.');
+    });
+  });
+
+  // Case 4: Missing bill type
+  it('should fail to pay the bill when bill type is missing', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/pay-bill/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 50  // Example valid amount
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400);  // Adjust according to your API
+      expect(response.body).to.have.property('error', 'Bill type is required.');
+      cy.log('Failed to pay bill due to missing bill type.');
+    });
+  });
+
+});
+
+/////////////////////////////////////***********************************/////////////////////////////////////
+describe('Airtime Purchase Tests', () => {
+
+  const apiUrl = 'http://localhost:8000/api';
+
+  const testUser2 = {
+    phone_number: '1234567899',  // Replace with your test data
+    password: 'password123',     // Replace with your test data
+    name: 'Test2 User'
+  };
+
+  let accessToken = '';
+  // Step 2: Log in the user and store the token
+  it('should log in the user and get a token', () => {
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/login/`,
+      body: {
+        phone_number: testUser2.phone_number,
+        password: testUser2.password
+      },
+    }).then((response) => {
+      if (response.status === 200) {
+        accessToken = response.body.access;
+        expect(accessToken).to.exist;
+        cy.log('Login successful, token acquired.');
+      } else {
+        throw new Error('Login failed. Cannot proceed with further tests.');
+      }
+    });
+  });
+
+  // Case 1: Successful airtime purchase
+  it('should buy airtime successfully using the token', () => {
     if (!accessToken) return;
 
     cy.request({
@@ -309,46 +810,73 @@ describe('Full Flow', () => {
         Authorization: `Bearer ${accessToken}`
       },
       body: {
-        amount: 20  // Example amount
+        amount: 20  // Example valid amount
       }
     }).then((response) => {
-      expect(response.status).to.eq(200);
+      expect(response.status).to.eq(200);  // Success status
       expect(response.body).to.have.property('message');
       cy.log('Airtime purchase successful.');
     });
   });
 
-  // Step 8: Retrieve transaction history
-  it('should retrieve transaction history using the token', () => {
+  // Case 2: Invalid airtime amount (negative)
+  it('should fail to buy airtime with a negative amount', () => {
     if (!accessToken) return;
 
     cy.request({
-      method: 'GET',
-      url: `${apiUrl}/transaction-history/`,
+      method: 'POST',
+      url: `${apiUrl}/buy-airtime/`,
       headers: {
         Authorization: `Bearer ${accessToken}`
-      }
+      },
+      body: {
+        amount: -10  // Invalid negative amount
+      },
+      failOnStatusCode: false  // Allows Cypress to handle non-2xx status codes
     }).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body).to.be.an('array');  // Expect the transaction history to be an array
-      cy.log('Transaction history retrieved.');
+      expect(response.status).to.eq(400);  // Adjust based on your API response
+      expect(response.body).to.have.property('error', 'Invalid amount.');
+      cy.log('Failed to purchase airtime due to invalid amount.');
     });
   });
 
-  // Step 9: Retrieve balance
-  it('should retrieve balance using the token', () => {
+  // Case 3: Missing airtime amount
+  it('should fail to buy airtime without providing an amount', () => {
     if (!accessToken) return;
 
     cy.request({
-      method: 'GET',
-      url: `${apiUrl}/balance/`,
+      method: 'POST',
+      url: `${apiUrl}/buy-airtime/`,
       headers: {
         Authorization: `Bearer ${accessToken}`
-      }
+      },
+      body: {},  // Missing amount
+      failOnStatusCode: false
     }).then((response) => {
-      expect(response.status).to.eq(200);
-      expect(response.body).to.have.property('balance');
-      cy.log('Balance retrieved.');
+      expect(response.status).to.eq(400);  // Adjust based on API response
+      expect(response.body).to.have.property('error', 'Amount is required.');
+      cy.log('Failed to purchase airtime due to missing amount.');
+    });
+  });
+
+  // Case 4: Exceeding airtime limit
+  it('should fail to buy airtime when amount exceeds the limit', () => {
+    if (!accessToken) return;
+
+    cy.request({
+      method: 'POST',
+      url: `${apiUrl}/buy-airtime/`,
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: {
+        amount: 100000  // Example excessive amount exceeding limit
+      },
+      failOnStatusCode: false
+    }).then((response) => {
+      expect(response.status).to.eq(400);  // Adjust according to your API
+      expect(response.body).to.have.property('error', 'Exceeds airtime limit.');
+      cy.log('Failed to purchase airtime due to exceeding limit.');
     });
   });
 
