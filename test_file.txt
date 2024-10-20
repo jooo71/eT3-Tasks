@@ -1,1 +1,6 @@
-pip install pytest pytest-django
+hksbvh
+hksbvh
+joo
+essam
+npm install cypress --save-dev
+npx cypress open
