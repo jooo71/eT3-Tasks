@@ -56,15 +56,20 @@ def withdraw(request):
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 # # Pay Bill view
+VALID_BILL_TYPES = ['water', 'gas', 'electricity', 'internet']
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def pay_bill(request):
     # phone_number = request.data.get('phone').strip()
     user = request.user
-    bill_name = request.data.get('bill_type') ## this line for front with java switch to under line 
+    bill_name = request.data.get('bill_name') ## this line for front with java switch to under line 
     # bill_name = request.data.get('bill_name').strip()
     amount = Decimal(request.data.get('amount'))
     # user = User.objects.get(phone_number=phone_number)
+        # Check if bill_name is empty or not in the allowed types
+    if not bill_name or bill_name not in VALID_BILL_TYPES:
+        return Response({'error': 'Invalid bill type. Only water, gas, electricity, and internet are allowed.'},
+                        status=status.HTTP_400_BAD_REQUEST)
     try:
         user.pay_bill(amount)
         transaction = Transaction.objects.create(sender=user, amount=amount, transaction_type=f'Bill Payment ({bill_name})')
@@ -94,15 +99,21 @@ def transfer(request):
     recipient_phone = request.data.get('recipient_phone')
     amount = Decimal(request.data.get('amount'))
 
-    # sender = User.objects.get(phone_number=sender_phone)
-    recipient = User.objects.get(phone_number=recipient_phone)
+    try:
+        recipient = User.objects.get(phone_number=recipient_phone)
+    except User.DoesNotExist:
+        return Response({'error': 'Recipient not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Prevent transferring to self
+    if user.phone_number == recipient_phone:
+        return Response({'error': 'You cannot transfer to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
 
     if user.balance >= amount:
         user.withdraw(amount)
         recipient.deposit(amount)
         transaction = Transaction.objects.create(sender=user, recipient=recipient, amount=amount, transaction_type='Transfer')
         return Response({'message': f'Transferred {amount} from {user.name} to {recipient.name}.',
-                         'recipient_name': recipient.name }) ## this line for front with java
+                         'recipient_name': recipient.name })
     else:
         return Response({'error': 'Insufficient balance.'}, status=status.HTTP_400_BAD_REQUEST)
 
